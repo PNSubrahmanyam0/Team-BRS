@@ -16,11 +16,11 @@ export function GoogleDriveSettings({connected,googleEmail,rootFolderName}:{conn
    const view=new picker.DocsView(picker.ViewId.FOLDERS).setIncludeFolders(true).setSelectFolderEnabled(true);
    const ui=new picker.PickerBuilder().setAppId(appId).setDeveloperKey(apiKey).setOAuthToken(tokenData.accessToken).addView(view).setCallback(async(data:any)=>{
     if(data.action!==picker.Action.PICKED)return;
-    const selected=data.docs?.[0];if(!selected?.id)return;
-    const save=await fetch("/api/google-drive/select-folder",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({folderId:selected.id})});
-    const result=await save.json();if(!save.ok)throw new Error(result.error||"Folder selection failed.");
-    setMessage("Connected folder: "+result.folderName+". Six private subfolders are ready.");
-    window.location.reload();
+    try{const selected=data.docs?.[0];if(!selected?.id)return;
+     const save=await fetch("/api/google-drive/select-folder",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({folderId:selected.id})});
+     const result=await save.json();if(!save.ok)throw new Error(result.error||"Folder selection failed.");
+     setMessage("Connected folder: "+result.folderName+". Six private subfolders are ready.");window.location.reload();
+    }catch(e){setMessage(e instanceof Error?e.message:"Folder selection failed.");}
    }).build();
    ui.setVisible(true);
   }catch(e){setMessage(e instanceof Error?e.message:"Could not open folder picker.");}
