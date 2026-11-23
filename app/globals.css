@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #f5f7fb; color: #172033; font-family: Arial, Helvetica, sans-serif; }
+input, select, textarea, button { font: inherit; }
+.panel { background: white; border: 1px solid #e5eaf2; border-radius: 16px; }
+.field { width: 100%; border: 1px solid #d8dfeb; border-radius: 9px; padding: 10px 12px; background: white; outline: none; }
+.field:focus { border-color: #2563eb; box-shadow: 0 0 0 3px #dbeafe; }
+.btn { display: inline-flex; align-items: center; justify-content: center; border-radius: 9px; padding: 10px 15px; font-weight: 600; background: #1d4ed8; color: white; }
+.btn:disabled { opacity: .55; cursor: not-allowed; }
+.muted { color: #64748b; }
