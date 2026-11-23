@@ -43,3 +43,8 @@ Generate the two random secrets locally with a cryptographically secure generato
 - Files are private in Drive. The application stores Drive IDs and metadata only.
 - Do not use public Drive sharing links for CVs, identity documents or agreements.
 - Google OAuth app verification may be required before public production use, depending on scopes and audience. Keep the app in Testing and add only trusted test users until verification is complete.
+
+## OAuth publishing status warning
+- If Google offers a **Personal** audience/mode and only the connected personal Google account will authorize Drive access, use that option.
+- If you configure an **External** app and leave its publishing status as **Testing**, Google documents that refresh tokens expire after 7 days when Drive scopes are requested. This would require reconnecting weekly. Do not treat Testing mode as a permanent production setup.
+- Before public production use, review Google's current publishing/verification requirements for the exact scopes and audience. The app intentionally uses the narrower `drive.file` scope rather than broad full-Drive access.
