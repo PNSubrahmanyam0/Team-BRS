@@ -55,7 +55,7 @@ Open <http://localhost:3000>. Without credentials, all public pages and the heal
    **Important:** the initial 27-table BRS schema was provisioned directly in the new remote project before this otherwise-empty repository was initialized. It has no checked-in baseline migration. Do not use `supabase db reset` or apply the three reconciliation migrations to a blank project: they are deliberately additive and require that existing baseline. Export and commit a baseline schema before creating any preview or replacement database.
 
 5. Follow [Supabase bootstrap](supabase/BOOTSTRAP.md) to provision the first owner and verify the existing BRS organisation. `BRS_ORGANIZATION_ID` is supplied in `.env.example`; do not make it public.
-6. Configure Supabase Auth email OTP templates (using the token/code template), redirect URLs, CAPTCHA/rate limiting, and a transactional email provider. Only then set `REGISTRATION_ENABLED=true` and `AUTH_OTP_ENABLED=true` in a non-production environment.
+6. Configure Supabase Auth email OTP and password-recovery templates, CAPTCHA/rate limiting, and a transactional email provider. Add `http://localhost:3000/auth/update-password` to the Supabase Auth Redirect URL allow-list for local recovery tests; add the deployed equivalent before release. Only then set `REGISTRATION_ENABLED=true` and `AUTH_OTP_ENABLED=true` in a non-production environment.
 
 The Codex Supabase MCP server is configured for project `wavwoupjwulepbifzvkz`; it is separate from the CLI authentication above.
 

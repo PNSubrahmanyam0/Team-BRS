@@ -1,4 +1,5 @@
 import { signIn } from "./actions";
+import Link from "next/link";
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
   const params = await searchParams;
   return <main className="min-h-screen grid place-items-center p-5">
@@ -10,6 +11,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
         <label className="block text-sm font-medium">Password<input className="field mt-1" name="password" type="password" autoComplete="current-password" required placeholder="Enter your password" /></label>
         <button className="btn w-full" type="submit">Sign in</button>
       </form>
+      <p className="mt-4 text-right text-sm"><Link className="font-semibold text-blue-700 underline" href="/auth/forgot-password">Forgot password?</Link></p>
       <p className="muted mt-6 text-xs">Administrator accounts are provisioned securely through Supabase Auth.</p>
     </section>
   </main>;
