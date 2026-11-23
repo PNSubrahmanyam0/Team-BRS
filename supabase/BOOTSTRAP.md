@@ -1,6 +1,6 @@
 # Supabase bootstrap for BRS AI Recruiter
 
-Run this only in the separate project `wavwoupjwulepbifzvkz`, after reviewing and applying the migrations. Use a non-production environment for the first pass and dummy details only. The project already contains the BRS organisation and no candidate, applicant, vacancy, or resume records.
+Run this only in the dedicated BRS project `zxqwxacupnpyyljlgsfp`, after reviewing and applying the migrations. Use a non-production environment for the first pass and dummy details only. The project contains the active BRS organisation and no candidate, application, vacancy, or resume records.
 
 ## 1. Verify the BRS organization
 
@@ -10,7 +10,7 @@ The dedicated project already has this one active organization:
 | --- | --- |
 | Name | BRS Career Dream Job's |
 | Slug | `brs-career-dream-jobs` |
-| Organization ID | `4a7133e1-dc9d-46d0-b503-b51aaba28251` |
+| Organization ID | `c8341fb8-4854-4f4f-8af8-5a1b174de642` |
 
 It is already present in `.env.example` as the server-only `BRS_ORGANIZATION_ID`. Do not expose it as a `NEXT_PUBLIC_` value.
 
@@ -22,7 +22,7 @@ Use Supabase Auth to create/verify the organisation owner's user through a contr
 insert into public.profiles (id, organization_id, full_name, role, email, status)
 values (
   '<auth-user-uuid>',
-  '4a7133e1-dc9d-46d0-b503-b51aaba28251',
+  'c8341fb8-4854-4f4f-8af8-5a1b174de642',
   'BRS Owner',
   'owner',
   'owner@example.test',

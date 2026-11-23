@@ -33,6 +33,23 @@ export function createAdminDb() {
  if(!url||!key) throw new Error("Server-side Supabase service key is not configured.");
  return createSupabaseClient(url,key,{auth:{autoRefreshToken:false,persistSession:false}});
 }
+
+/**
+ * Google Drive setup needs privileged, server-only credentials. Keep this
+ * separate from browser-safe Supabase configuration so the optional storage
+ * screen can remain available before Drive is provisioned.
+ */
+export function hasGoogleDriveServerConfiguration() {
+ return Boolean(
+  process.env.NEXT_PUBLIC_SUPABASE_URL &&
+  process.env.SUPABASE_SERVICE_ROLE_KEY &&
+  process.env.GOOGLE_CLIENT_ID &&
+  process.env.GOOGLE_CLIENT_SECRET &&
+  process.env.GOOGLE_REDIRECT_URI &&
+  process.env.GOOGLE_TOKEN_ENCRYPTION_KEY &&
+  process.env.GOOGLE_OAUTH_STATE_SECRET,
+ );
+}
 export async function requireStaff() {
  const supabase=await createSessionClient();
  const {data:{user}}=await supabase.auth.getUser();

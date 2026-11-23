@@ -1,6 +1,8 @@
 -- Reconciles this repository with the already-provisioned, dedicated BRS
 -- database. It is additive: no existing application table, record, or policy
--- is removed. Apply only to project wavwoupjwulepbifzvkz.
+-- is removed. Historical migration for the earlier BRS layout; do not apply it
+-- to this project because its compatible replacement is
+-- 20261123170000_reconcile_zxq_brs_website.sql.
 
 -- Candidate codes must be generated atomically, rather than calculated by the
 -- application from a count. This prevents concurrent registrations colliding.

@@ -1,6 +1,6 @@
 # Baseline schema export required
 
-The dedicated BRS project (`wavwoupjwulepbifzvkz`) was initialized directly before this repository received its first source commit. It contains the original 27 application tables, RLS policies, private authorization helpers, Google Drive connection structures, and one empty BRS organisation. The repository currently contains only the three **additive** reconciliation migrations applied on 23 November 2026.
+The dedicated BRS project (`zxqwxacupnpyyljlgsfp`) now contains the BRS job-platform foundation plus the additive website reconciliation migration. It includes the active BRS organisation, the linked owner profile, candidate and recruiter workflow tables, RLS policies, and a private resume bucket. The older migration notes in this repository are historical; do not apply them to a blank or unrelated project.
 
 This means that a blank database cannot be recreated with `supabase db reset` or `supabase db push` from this repository alone. Do not attempt either against a new project.
 
@@ -8,7 +8,7 @@ Before branch, preview, or disaster-recovery use, an authorized project administ
 
 ```bash
 # Authenticate with a scoped Supabase access token and the database password.
-npx supabase link --project-ref wavwoupjwulepbifzvkz
+npx supabase link --project-ref zxqwxacupnpyyljlgsfp
 npx supabase db pull --remote baseline_brs_schema --yes
 ```
 

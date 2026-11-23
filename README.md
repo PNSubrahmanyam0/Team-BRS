@@ -21,7 +21,7 @@ It intentionally does **not** make AI requests, send WhatsApp messages, initiate
 
 - Node.js 22+
 - npm 10+
-- The separate Supabase project `brs-ai-recruiter` in Mumbai (`wavwoupjwulepbifzvkz`)
+- The dedicated BRS Supabase project (`zxqwxacupnpyyljlgsfp`)
 
 ## Run locally
 
@@ -48,7 +48,7 @@ Open <http://localhost:3000>. Without credentials, all public pages and the heal
 
    ```bash
    npx supabase login
-   npx supabase link --project-ref wavwoupjwulepbifzvkz
+   npx supabase link --project-ref zxqwxacupnpyyljlgsfp
    npx supabase db push
    ```
 
@@ -57,7 +57,7 @@ Open <http://localhost:3000>. Without credentials, all public pages and the heal
 5. Follow [Supabase bootstrap](supabase/BOOTSTRAP.md) to provision the first owner and verify the existing BRS organisation. `BRS_ORGANIZATION_ID` is supplied in `.env.example`; do not make it public.
 6. Configure Supabase Auth email OTP and password-recovery templates, CAPTCHA/rate limiting, and a transactional email provider. Add `http://localhost:3000/auth/update-password` to the Supabase Auth Redirect URL allow-list for local recovery tests; add the deployed equivalent before release. Only then set `REGISTRATION_ENABLED=true` and `AUTH_OTP_ENABLED=true` in a non-production environment.
 
-The Codex Supabase MCP server is configured for project `wavwoupjwulepbifzvkz`; it is separate from the CLI authentication above.
+All BRS website database work uses project `zxqwxacupnpyyljlgsfp`. Do not connect this application to an older Supabase project.
 
 ## Database design
 
