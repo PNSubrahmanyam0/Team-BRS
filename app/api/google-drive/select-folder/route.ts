@@ -13,7 +13,7 @@ export async function POST(request:Request){
    const created=await driveJson("https://www.googleapis.com/drive/v3/files?fields=id,name",token,{method:"POST",body:JSON.stringify({name,mimeType:"application/vnd.google-apps.folder",parents:[folderId]})});
    folderMap[name]=created.id;
   }
-  const db=createAdminDb();const {error}=await db.from("google_drive_connections").update({root_folder_id:folderId,root_folder_name:String(folder.name),folder_map:folderMap,updated_at:new Date().toISOString()}).eq("organization_id",organizationId);
+  const db=createAdminDb();const {error}=await db.rpc("brs_google_drive_set_folder",{p_organization_id:organizationId,p_root_folder_id:folderId,p_root_folder_name:String(folder.name),p_folder_map:folderMap});
   if(error)throw new Error(error.message);
   return NextResponse.json({ok:true,folderName:folder.name,subfolders:Object.keys(folderMap)});
  }catch(e){return NextResponse.json({error:e instanceof Error?e.message:"Unable to save Drive folder."},{status:400});}
