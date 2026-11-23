@@ -7,3 +7,11 @@ out
 .vercel
 .DS_Store
 *.log
+coverage
+*.tsbuildinfo
+/supabase/.branches
+/supabase/.temp
+
+# Local agent-skill installation (not application source)
+/.agents
+/skills-lock.json

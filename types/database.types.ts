@@ -232,6 +232,50 @@ export type Database = {
           },
         ]
       }
+      candidate_consents: {
+        Row: {
+          candidate_id: string
+          consent_type: string
+          consent_version: string
+          created_at: string
+          granted: boolean
+          granted_at: string | null
+          id: string
+          source: string
+          withdrawn_at: string | null
+        }
+        Insert: {
+          candidate_id: string
+          consent_type: string
+          consent_version: string
+          created_at?: string
+          granted: boolean
+          granted_at?: string | null
+          id?: string
+          source: string
+          withdrawn_at?: string | null
+        }
+        Update: {
+          candidate_id?: string
+          consent_type?: string
+          consent_version?: string
+          created_at?: string
+          granted?: boolean
+          granted_at?: string | null
+          id?: string
+          source?: string
+          withdrawn_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "candidate_consents_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "candidates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       candidate_documents: {
         Row: {
           application_id: string | null
@@ -1206,6 +1250,7 @@ export type Database = {
           mime_type: string | null
           original_filename: string
           parsed_data: Json
+          storage_path: string | null
           uploaded_at: string
           version_number: number
         }
@@ -1220,6 +1265,7 @@ export type Database = {
           mime_type?: string | null
           original_filename: string
           parsed_data?: Json
+          storage_path?: string | null
           uploaded_at?: string
           version_number?: number
         }
@@ -1234,6 +1280,7 @@ export type Database = {
           mime_type?: string | null
           original_filename?: string
           parsed_data?: Json
+          storage_path?: string | null
           uploaded_at?: string
           version_number?: number
         }
@@ -1472,7 +1519,31 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      brs_google_drive_get_connection: {
+        Args: { p_organization_id: string }
+        Returns: Json
+      }
+      brs_google_drive_set_folder: {
+        Args: {
+          p_folder_map: Json
+          p_organization_id: string
+          p_root_folder_id: string
+          p_root_folder_name: string
+        }
+        Returns: undefined
+      }
+      brs_google_drive_upsert_connection: {
+        Args: {
+          p_connected_by: string
+          p_google_email: string
+          p_organization_id: string
+          p_refresh_token_auth_tag: string
+          p_refresh_token_ciphertext: string
+          p_refresh_token_iv: string
+          p_scopes: string[]
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

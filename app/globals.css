@@ -12,3 +12,16 @@ input, select, textarea, button { font: inherit; }
 .btn { display: inline-flex; align-items: center; justify-content: center; border-radius: 9px; padding: 10px 15px; font-weight: 600; background: #1d4ed8; color: white; }
 .btn:disabled { opacity: .55; cursor: not-allowed; }
 .muted { color: #64748b; }
+
+@layer base {
+  * { border-color: theme("colors.slate.200"); }
+  body { @apply min-h-screen bg-slate-50 text-slate-800 antialiased; }
+  input, select, textarea { @apply rounded-xl border-slate-300 bg-white shadow-sm focus:border-brand-500 focus:ring-brand-500; }
+}
+
+@layer components {
+  .eyebrow { @apply text-xs font-bold uppercase tracking-[0.16em] text-brand-600; }
+  .field-label { @apply mb-1.5 block text-sm font-semibold text-slate-700; }
+  .field-help { @apply mt-1 text-xs leading-5 text-slate-500; }
+  .status-pill { @apply inline-flex items-center rounded-full px-2.5 py-1 text-xs font-bold; }
+}
