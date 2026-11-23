@@ -1,6 +1,6 @@
 import "server-only";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
-import { createCipheriv, createDecipheriv, createHash, randomBytes } from "node:crypto";
+import { createCipheriv, createDecipheriv, createHmac, timingSafeEqual, randomBytes } from "node:crypto";
 import { createClient as createSessionClient } from "@/lib/supabase/server";
 
 const scopes = ["https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/userinfo.email"];
@@ -43,7 +43,7 @@ export async function requireStaff() {
 }
 export async function getConnection(organizationId:string) {
  const db=createAdminDb();
- const {data,error}=await db.from("google_drive_connections").select("*").eq("organization_id",organizationId).eq("status","connected").maybeSingle();
+ const {data,error}=await db.rpc("brs_google_drive_get_connection",{p_organization_id:organizationId});
  if(error) throw new Error(error.message);
  if(!data) throw new Error("Google Drive is not connected for this organization.");
  return data;
@@ -60,15 +60,16 @@ export function makeOAuthState(payload:Record<string,unknown>) {
  const secret=process.env.GOOGLE_OAUTH_STATE_SECRET;
  if(!secret||secret.length<32) throw new Error("GOOGLE_OAUTH_STATE_SECRET must be at least 32 characters.");
  const body=Buffer.from(JSON.stringify(payload)).toString("base64url");
- const signature=createHash("sha256").update(secret+"."+body).digest("base64url");
+ const signature=createHmac("sha256",secret).update(body).digest("base64url");
  return body+"."+signature;
 }
 export function verifyOAuthState(value:string) {
  const [body,signature]=value.split(".");
  const secret=process.env.GOOGLE_OAUTH_STATE_SECRET;
  if(!body||!signature||!secret) return null;
- const expected=createHash("sha256").update(secret+"."+body).digest("base64url");
- if(signature!==expected) return null;
+ const expected=createHmac("sha256",secret).update(body).digest();
+ let supplied:Buffer;try{supplied=Buffer.from(signature,"base64url");}catch{return null;}
+ if(supplied.length!==expected.length||!timingSafeEqual(supplied,expected)) return null;
  try { return JSON.parse(Buffer.from(body,"base64url").toString("utf8")); } catch { return null; }
 }
 export { scopes as GOOGLE_DRIVE_SCOPES, randomBytes };
