@@ -1,13 +1,13 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BriefcaseBusiness, Building2, LayoutDashboard, LogOut, Users } from "lucide-react";
+import { BriefcaseBusiness, Building2, LayoutDashboard, LogOut, Users, HardDrive } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 const links = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
   { href: "/candidates", label: "Candidates", icon: Users },
   { href: "/vacancies", label: "Vacancies", icon: BriefcaseBusiness },
-  { href: "/companies", label: "Companies", icon: Building2 }
+  { href: "/companies", label: "Companies", icon: Building2 },\n  { href: "/settings/storage", label: "Storage settings", icon: HardDrive }
 ];
 export function AdminShell({ children, email }: { children: React.ReactNode; email: string }) {
   const path = usePathname();
