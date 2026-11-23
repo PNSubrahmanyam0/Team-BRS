@@ -7,7 +7,8 @@ const links = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
   { href: "/candidates", label: "Candidates", icon: Users },
   { href: "/vacancies", label: "Vacancies", icon: BriefcaseBusiness },
-  { href: "/companies", label: "Companies", icon: Building2 },\n  { href: "/settings/storage", label: "Storage settings", icon: HardDrive }
+  { href: "/companies", label: "Companies", icon: Building2 },
+  { href: "/settings/storage", label: "Storage settings", icon: HardDrive },
 ];
 export function AdminShell({ children, email }: { children: React.ReactNode; email: string }) {
   const path = usePathname();

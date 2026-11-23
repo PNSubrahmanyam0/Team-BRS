@@ -12,7 +12,6 @@ async function uploadToDrive(file:File,folderId:string,token:string){
  const data=await uploaded.json();if(!uploaded.ok)throw new Error(data.error?.message||"Google Drive upload failed.");return data;
 }
 export async function POST(request:Request){
- let createdFileId:string|undefined;
  try{
   const {user,organizationId}=await requireStaff();const form=await request.formData();
   const file=form.get("file");const category=String(form.get("category")||"");const candidateId=String(form.get("candidateId")||"");const vacancyId=String(form.get("vacancyId")||"");const documentType=String(form.get("documentType")||"other");
@@ -31,7 +30,7 @@ export async function POST(request:Request){
   const connection=await getConnection(organizationId);if(!connection.root_folder_id)throw new Error("Choose the dedicated Google Drive folder in Storage Settings first.");
   const folderName=category==="resume"?"01_Candidate_Resumes":category==="candidate_document"?"02_Candidate_Documents":category==="vacancy_poster"?"03_Vacancy_Posters":"02_Candidate_Documents";
   const folderId=connection.folder_map?.[folderName];if(!folderId)throw new Error("Drive subfolder configuration is missing.");
-  const token=await getAccessToken(connection);const driveFile=await uploadToDrive(file,folderId,token);createdFileId=driveFile.id;
+  const token=await getAccessToken(connection);const driveFile=await uploadToDrive(file,folderId,token);if(typeof driveFile.id!=="string"||!driveFile.id)throw new Error("Google Drive did not return a file ID.");const createdFileId=driveFile.id;
   const db=createAdminDb();let recordError:any=null;
   if(category==="resume"){
    const {data:existing}=await db.from("resumes").select("version_number").eq("candidate_id",candidateId).order("version_number",{ascending:false}).limit(1);

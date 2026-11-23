@@ -65,6 +65,7 @@ The dedicated project was already provisioned before this repository was initial
 
 - [`20261123111621_reconcile_remote_registration.sql`](supabase/migrations/20261123111621_reconcile_remote_registration.sql) adds atomic candidate-code generation, case-normalized duplicate protection, matching indexes, private resume storage, and versioned consent history protected by RLS.
 - [`20261123112114_enforce_assignment_and_document_guards.sql`](supabase/migrations/20261123112114_enforce_assignment_and_document_guards.sql) allows exactly one current assignment per application while retaining prior assignment rows, and prevents retaining original educational certificates as documents.
+- [`20261123114309_narrow_candidate_consent_write_policies.sql`](supabase/migrations/20261123114309_narrow_candidate_consent_write_policies.sql) narrows staff consent mutations to insert, update, and delete so the read policy remains the only permissive `SELECT` policy.
 - Existing role and candidate ownership helpers reside in the unexposed `private` schema. The app never exposes the Supabase service-role key to the browser.
 - Resume URLs must be short-lived signed URLs issued only after authorization. Browser-side object writes are denied; validated server routes use the service role.
 
