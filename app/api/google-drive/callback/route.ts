@@ -23,7 +23,7 @@ export async function GET(request:Request) {
   if(!profileResponse.ok||!googleProfile.email) return fail("Could not verify the connected Google account.");
   const encrypted=encryptToken(String(tokens.refresh_token));
   const db=createAdminDb();
-  const {error}=await db.from("google_drive_connections").upsert({organization_id:organizationId,connected_by:user.id,google_email:String(googleProfile.email),refresh_token_ciphertext:encrypted.ciphertext,refresh_token_iv:encrypted.iv,refresh_token_auth_tag:encrypted.tag,scopes:String(tokens.scope||"").split(" "),status:"connected",updated_at:new Date().toISOString()},{onConflict:"organization_id"});
+  const {error}=await db.rpc("brs_google_drive_upsert_connection",{p_organization_id:organizationId,p_connected_by:user.id,p_google_email:String(googleProfile.email),p_refresh_token_ciphertext:encrypted.ciphertext,p_refresh_token_iv:encrypted.iv,p_refresh_token_auth_tag:encrypted.tag,p_scopes:String(tokens.scope||"").split(" ")});
   if(error) throw new Error(error.message);
   return NextResponse.redirect(new URL("/settings/storage?connected=1",url.origin));
  } catch(e) { return fail(e instanceof Error?e.message:"Google Drive connection failed."); }
