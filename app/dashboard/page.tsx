@@ -1,6 +1,9 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, hasSupabaseConfiguration } from "@/lib/supabase/server";
 import { AdminShell } from "@/components/admin-shell";
+
+export const dynamic = "force-dynamic";
+
 const cards = [
   { key: "candidates", label: "Total candidates", href: "/candidates" },
   { key: "vacancies", label: "Active vacancies", href: "/vacancies" },
@@ -8,6 +11,7 @@ const cards = [
   { key: "applications", label: "Applications", href: "/candidates" }
 ] as const;
 export default async function DashboardPage() {
+  if (!hasSupabaseConfiguration()) redirect("/login?error=Supabase%20is%20not%20configured");
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");

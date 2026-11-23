@@ -1,19 +1,72 @@
-import { Bell, BriefcaseBusiness, CalendarDays, CircleCheck, FileText, MapPin, Pencil, WalletCards } from "lucide-react";
-import { demoCandidate, demoVacancies } from "@/lib/demo-data";
-import { evaluateMatch } from "@/lib/matching";
-import { formatInr } from "@/lib/utils";
+import { BriefcaseBusiness, CircleCheck, FileText, MapPin, UserRound } from "lucide-react";
 
-export function CandidateDashboard() {
-  const matched = demoVacancies
-    .map((vacancy) => ({ vacancy, result: evaluateMatch(demoCandidate, vacancy) }))
-    .filter(({ result }) => result.eligible && result.route !== "do_not_recommend");
+type CandidateDashboardProps = {
+  candidate: {
+    candidateCode: string;
+    employmentType: string;
+    fullName: string;
+    keySkills: string[];
+    preferredJobRoles: string[];
+    preferredLocations: string[];
+    profileCompletion: number;
+    recruitmentStatus: string;
+    totalExperienceMonths: number | null;
+  };
+  currentResume: {
+    extractionStatus: string;
+    filename: string;
+    uploadedAt: string;
+  } | null;
+  applicationCount: number;
+};
+
+const displayStatus = (status: string) => status.replaceAll("_", " ");
+
+export function CandidateDashboard({ candidate, currentResume, applicationCount }: CandidateDashboardProps) {
+  const experience = candidate.totalExperienceMonths
+    ? `${Math.floor(candidate.totalExperienceMonths / 12)}y ${candidate.totalExperienceMonths % 12}m`
+    : candidate.employmentType === "fresher"
+      ? "Fresher"
+      : "Needs review";
 
   return (
     <div className="space-y-7">
-      <section className="rounded-2xl bg-gradient-to-r from-brand-700 to-brand-500 p-6 text-white shadow-card"><p className="text-sm font-semibold text-brand-100">Candidate dashboard · development preview</p><div className="mt-3 flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><h1 className="text-3xl font-black">Welcome, {demoCandidate.fullName}</h1><p className="mt-2 text-brand-100">{demoCandidate.candidateCode} · Your profile is {demoCandidate.profileCompletion}% complete.</p></div><a href="/register" className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-white px-4 text-sm font-bold text-brand-700 hover:bg-brand-50"><Pencil size={16} /> Edit profile</a></div></section>
-      <p className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">This screen contains fictional sample data only. Sign-in and row-level permissions must be configured before real candidate records are displayed.</p>
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"><Stat icon={<CircleCheck />} label="Profile status" value="Ready for review" note="Resume uploaded" /><Stat icon={<BriefcaseBusiness />} label="Recommendations" value={`${matched.length} available`} note="Verified vacancies only" /><Stat icon={<CalendarDays />} label="Upcoming interviews" value="None scheduled" note="We will notify you" /><Stat icon={<WalletCards />} label="Payment status" value="No agreement" note="No balance due" /></section>
-      <section className="grid gap-6 xl:grid-cols-[1.35fr_.65fr]"><div className="panel"><div className="flex items-start justify-between gap-4"><div><p className="eyebrow">Recommended jobs</p><h2 className="mt-1 text-xl font-black text-ink">Roles that meet the required checks</h2></div><span className="status-pill bg-emerald-100 text-emerald-800">{matched.length} active</span></div><div className="mt-5 space-y-4">{matched.map(({ vacancy, result }) => <article key={vacancy.id} className="rounded-xl border border-slate-200 p-4"><div className="flex flex-col justify-between gap-3 sm:flex-row"><div><h3 className="font-bold text-ink">{vacancy.jobTitle}</h3><p className="mt-1 text-sm text-slate-600">{vacancy.companyName} · {vacancy.workMode} · <span className="inline-flex items-center gap-1"><MapPin size={13} />{vacancy.location}</span></p></div><span className="h-fit rounded-full bg-emerald-100 px-2.5 py-1 text-sm font-black text-emerald-800">{result.score}% match</span></div><p className="mt-3 text-sm leading-6 text-slate-600">{result.explanation}</p><div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold"><span className="rounded-full bg-slate-100 px-2 py-1 text-slate-700">Package: {formatInr(vacancy.packageMin)}–{formatInr(vacancy.packageMax)}</span>{result.matchedSkills.map((skill) => <span key={skill} className="rounded-full bg-brand-50 px-2 py-1 text-brand-700">{skill}</span>)}</div><button className="mt-4 text-sm font-bold text-brand-700 underline">View opportunity details</button></article>)}{matched.length === 0 && <div className="rounded-xl bg-slate-50 p-5 text-sm text-slate-600">No matching vacancies available right now. Your profile has been retained in the pending matching queue according to your notification preferences.</div>}</div></div><aside className="space-y-5"><div className="panel"><div className="flex items-center gap-2"><Bell className="text-brand-600" size={19} /><h2 className="font-bold text-ink">Recent notifications</h2></div><ul className="mt-4 space-y-4 text-sm"><li><strong className="text-ink">Profile saved</strong><p className="mt-1 text-slate-600">Your sample profile is ready for matching.</p><time className="mt-1 block text-xs text-slate-400">Just now</time></li><li><strong className="text-ink">Privacy reminder</strong><p className="mt-1 text-slate-600">You can update your job-alert preferences at any time.</p></li></ul></div><div className="panel"><div className="flex items-center gap-2"><FileText className="text-brand-600" size={19} /><h2 className="font-bold text-ink">My resume</h2></div><p className="mt-3 text-sm text-slate-600">Current resume management is available after your account is verified.</p><a href="/register" className="mt-3 inline-block text-sm font-bold text-brand-700 underline">Replace resume</a></div></aside></section>
+      <section className="rounded-2xl bg-gradient-to-r from-brand-700 to-brand-500 p-6 text-white shadow-card">
+        <p className="text-sm font-semibold text-brand-100">Candidate dashboard</p>
+        <div className="mt-3 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+          <div>
+            <h1 className="text-3xl font-black">Welcome, {candidate.fullName}</h1>
+            <p className="mt-2 text-brand-100">{candidate.candidateCode} · Your profile is {candidate.profileCompletion}% complete.</p>
+          </div>
+          <span className="inline-flex w-fit items-center rounded-xl bg-white/15 px-4 py-2 text-sm font-bold capitalize">{displayStatus(candidate.recruitmentStatus)}</span>
+        </div>
+      </section>
+
+      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <Stat icon={<CircleCheck />} label="Profile status" value={`${candidate.profileCompletion}% complete`} note="Keep your details accurate" />
+        <Stat icon={<BriefcaseBusiness />} label="Applications" value={String(applicationCount)} note="Verified roles only" />
+        <Stat icon={<UserRound />} label="Experience" value={experience} note="Based on your profile" />
+        <Stat icon={<FileText />} label="Resume" value={currentResume ? "On file" : "Needs upload"} note={currentResume ? displayStatus(currentResume.extractionStatus) : "Contact BRS for assistance"} />
+      </section>
+
+      <section className="grid gap-6 xl:grid-cols-[1.25fr_.75fr]">
+        <article className="panel p-5">
+          <p className="eyebrow">Profile summary</p>
+          <h2 className="mt-1 text-xl font-black text-ink">Your preferences</h2>
+          <dl className="mt-5 grid gap-5 sm:grid-cols-2">
+            <div><dt className="text-sm font-semibold text-slate-500">Preferred roles</dt><dd className="mt-2 font-medium text-slate-800">{candidate.preferredJobRoles.length ? candidate.preferredJobRoles.join(", ") : "Not set"}</dd></div>
+            <div><dt className="text-sm font-semibold text-slate-500">Preferred locations</dt><dd className="mt-2 flex flex-wrap gap-2">{candidate.preferredLocations.length ? candidate.preferredLocations.map((location) => <span key={location} className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-sm font-medium text-slate-700"><MapPin size={13} />{location}</span>) : "Not set"}</dd></div>
+            <div className="sm:col-span-2"><dt className="text-sm font-semibold text-slate-500">Skills</dt><dd className="mt-2 flex flex-wrap gap-2">{candidate.keySkills.length ? candidate.keySkills.map((skill) => <span key={skill} className="rounded-full bg-brand-50 px-2.5 py-1 text-sm font-medium text-brand-700">{skill}</span>) : "Not set"}</dd></div>
+          </dl>
+        </article>
+
+        <aside className="panel p-5">
+          <p className="eyebrow">Current resume</p>
+          <h2 className="mt-1 text-xl font-black text-ink">Document status</h2>
+          {currentResume ? <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-4"><p className="truncate font-bold text-slate-800">{currentResume.filename}</p><p className="mt-2 text-sm text-slate-600">Uploaded {new Intl.DateTimeFormat("en-IN", { dateStyle: "medium" }).format(new Date(currentResume.uploadedAt))}</p><p className="mt-1 text-sm capitalize text-slate-600">Review status: {displayStatus(currentResume.extractionStatus)}</p></div> : <p className="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950">There is no current resume on file. Resume replacement will be available after the candidate self-service workflow is approved.</p>}
+          <p className="mt-5 text-xs leading-5 text-slate-500">For privacy, BRS never shows a public resume URL. Authorized access uses short-lived links only.</p>
+        </aside>
+      </section>
     </div>
   );
 }

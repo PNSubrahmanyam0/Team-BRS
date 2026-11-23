@@ -1,8 +1,12 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, hasSupabaseConfiguration } from "@/lib/supabase/server";
 import { AdminShell } from "@/components/admin-shell";
+
+export const dynamic = "force-dynamic";
+
 export default async function CandidatesPage() {
+ if (!hasSupabaseConfiguration()) redirect("/login?error=Supabase%20is%20not%20configured");
  const supabase=await createClient(); const {data:{user}}=await supabase.auth.getUser(); if(!user) redirect("/login");
  const {data:profile}=await supabase.from("profiles").select("email,role,organization_id").eq("id",user.id).maybeSingle();
  if(!profile || !["owner","admin","recruiter"].includes(profile.role) || !profile.organization_id) redirect("/dashboard");

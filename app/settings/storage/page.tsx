@@ -1,9 +1,13 @@
 import {redirect} from "next/navigation";
-import {createClient} from "@/lib/supabase/server";
+import {createClient,hasSupabaseConfiguration} from "@/lib/supabase/server";
 import {AdminShell} from "@/components/admin-shell";
 import {GoogleDriveSettings} from "@/components/google-drive-settings";
 import {createAdminDb} from "@/lib/google-drive/server";
+
+export const dynamic = "force-dynamic";
+
 export default async function StorageSettings({searchParams}:{searchParams:Promise<{connected?:string;error?:string}>}){
+ if(!hasSupabaseConfiguration())redirect("/login?error=Supabase%20is%20not%20configured");
  const s=await createClient();const {data:{user}}=await s.auth.getUser();if(!user)redirect("/login");
  const {data:p}=await s.from("profiles").select("email,role,organization_id").eq("id",user.id).maybeSingle();if(!p||!["owner","admin"].includes(p.role)||!p.organization_id)redirect("/dashboard");
  const db=createAdminDb();const {data:c}=await db.rpc("brs_google_drive_get_connection",{p_organization_id:p.organization_id});

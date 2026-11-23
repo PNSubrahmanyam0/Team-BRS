@@ -9,7 +9,7 @@ The first build is a working Next.js foundation with fictional development data:
 - Candidate registration, dynamically tailored to Fresher or Experienced candidates.
 - Required PDF/DOCX resume selection and a private-storage upload route, disabled by default until the safety checks in [Launch checklist](#launch-checklist) are complete.
 - Email OTP sign-in and candidate-account claim scaffolding using Supabase Auth, with no password stored by this app. Mobile OTP stays off until an approved SMS provider is configured.
-- Candidate and admin dashboard previews; the sample records are clearly labelled fictional.
+- A candidate dashboard that requires an active, linked candidate session, plus the existing server-guarded staff dashboard.
 - Deterministic candidate–vacancy eligibility and scoring. Mandatory failures always prevent an automatic recommendation.
 - A schema already provisioned in the dedicated BRS Supabase project: organisations, roles, candidates, resumes, companies, vacancies and versions, applications/reassignments/history, interviews, documents, agreements, payment ledger, notifications, Google Drive integration records, and audit logs.
 - Generated TypeScript definitions checked into [`types/database.types.ts`](types/database.types.ts) from that real database.
@@ -52,7 +52,7 @@ Open <http://localhost:3000>. Without credentials, all public pages and the heal
    npx supabase db push
    ```
 
-   **Important:** the initial 27-table BRS schema was provisioned directly in the new remote project before this otherwise-empty repository was initialized. It has no checked-in baseline migration. Do not use `supabase db reset` or apply the two reconciliation migrations to a blank project: they are deliberately additive and require that existing baseline. Export and commit a baseline schema before creating any preview or replacement database.
+   **Important:** the initial 27-table BRS schema was provisioned directly in the new remote project before this otherwise-empty repository was initialized. It has no checked-in baseline migration. Do not use `supabase db reset` or apply the three reconciliation migrations to a blank project: they are deliberately additive and require that existing baseline. Export and commit a baseline schema before creating any preview or replacement database.
 
 5. Follow [Supabase bootstrap](supabase/BOOTSTRAP.md) to provision the first owner and verify the existing BRS organisation. `BRS_ORGANIZATION_ID` is supplied in `.env.example`; do not make it public.
 6. Configure Supabase Auth email OTP templates (using the token/code template), redirect URLs, CAPTCHA/rate limiting, and a transactional email provider. Only then set `REGISTRATION_ENABLED=true` and `AUTH_OTP_ENABLED=true` in a non-production environment.
@@ -103,10 +103,10 @@ npm run dev
 
 Do not enable external candidate traffic or set `REGISTRATION_ENABLED=true` until all of these are complete:
 
-- [ ] Export and commit the pre-existing baseline schema before creating a fresh local/preview database. The two repository migrations are additive reconciliations and have already been applied to the dedicated remote BRS project.
+- [ ] Export and commit the pre-existing baseline schema before creating a fresh local/preview database. The three repository migrations are additive reconciliations and have already been applied to the dedicated remote BRS project.
 - [ ] Complete and test email OTP, CAPTCHA, durable server-side rate limiting, sessions, claim-profile workflow, and duplicate-account handling. Add mobile OTP only after an approved SMS provider is in place.
 - [ ] Add an authenticated resume-replacement route that creates a new version, marks the old version non-current, audits the update, and queues rematching.
-- [ ] Protect `/admin` with server-side owner/admin/recruiter route checks; the current dashboard is a non-sensitive visual preview.
+- [ ] Maintain server-side owner/admin/recruiter route checks for every staff route. `/admin` now redirects to the already guarded `/dashboard`; test this boundary with separate candidate and staff users before launch.
 - [ ] Implement transactional application reassignment and status transition RPCs that append history/audit rows and do not silently alter agreements, offers, payments, or interviews.
 - [ ] Implement the background queue for matching. Do not make vacancy activation wait for matching, resume extraction, or notifications.
 - [ ] Obtain legal/privacy/retention review, backup/recovery plan, monitoring, and incident ownership.
