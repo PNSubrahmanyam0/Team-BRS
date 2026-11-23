@@ -5,7 +5,7 @@ async function driveJson(url:string,token:string,init?:RequestInit){const r=awai
 export async function POST(request:Request){
  try{
   const {user,organizationId}=await requireStaff();const body=await request.json();const folderId=String(body.folderId||"").trim();if(!folderId)throw new Error("Select a Drive folder first.");
-  const connection=await getConnection(organizationId);const token=await getAccessToken(connection);
+  const connection=await getConnection(organizationId);if(connection.root_folder_id===folderId&&connection.folder_map&&Object.keys(connection.folder_map).length===DRIVE_FOLDERS.length)return NextResponse.json({ok:true,folderName:connection.root_folder_name,subfolders:Object.keys(connection.folder_map)});const token=await getAccessToken(connection);
   const folder=await driveJson("https://www.googleapis.com/drive/v3/files/"+encodeURIComponent(folderId)+"?fields=id,name,mimeType,trashed,capabilities(canAddChildren)",token);
   if(folder.mimeType!=="application/vnd.google-apps.folder"||folder.trashed||folder.capabilities?.canAddChildren!==true)throw new Error("Selected folder is invalid or does not allow file creation.");
   const folderMap:Record<string,string>={};
